@@ -9,13 +9,14 @@ const app = express();
 
 app.get('/restaurants', (req, res) => {
   knex('restaurants')
-    .select()
+    .select('id', 'name', 'cuisine', 'borough')
+    .select(knex.raw("CONCAT(address_building_number, ' ', address_street, ' ', address_zipcode) AS address"))
     .limit(10)
     .then(results => res.json(results));
 });
 
 app.get('/restaurants/:id', (req, res) => {
-  knex.select(
+  knex.first(
     'restaurants.id', 
     'name', 
     'cuisine', 
@@ -24,11 +25,12 @@ app.get('/restaurants/:id', (req, res) => {
     'grade', 
     'date AS inspectionDate', 
     'score'
-  )
+  ) 
+    .select(knex.raw("CONCAT(address_building_number, ' ', address_street, ' ', address_zipcode) AS address"))
     .from('restaurants')
     .where('restaurants.id', req.params.id)
     .innerJoin('grades', 'restaurants.id', 'grades.restaurant_id')
-    //.limit(1)
+    .orderBy('date', 'desc')
     .then(results => res.json(results));
 });
 
