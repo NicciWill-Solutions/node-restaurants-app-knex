@@ -7,12 +7,17 @@ const knex = require('knex')(DATABASE);
 process.stdout.write('\x1Bc');
 
 // Sample select 
-knex
-  .select()
-  .from('restaurants')
-  .limit(2)
-  .debug(true)
-  .then(results => console.log(results));
+// knex
+//   .select()
+//   .from('restaurants')
+//   .limit(2)
+//   .debug(true)
+//   .then(results => console.log(results));
+knex('grades')
+  .where('id', 10)
+  .del()
+  .then(results => console.log(JSON.stringify(results, null, 4)))
+  .catch( err => console.log( err ));
 
 
 // Destroy the connection pool
